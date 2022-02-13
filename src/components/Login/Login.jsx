@@ -14,6 +14,7 @@ function Login() {
 	});
 
 	const [token, setToken] = useState(useLocalStorageToken());
+	const [data, setData] = useState({ result: '', user: { name: '' } });
 	const navigate = useNavigate();
 
 	const navigateToCourses = () => navigate('/courses', { replace: true });
@@ -27,11 +28,12 @@ function Login() {
 
 	useEffect(() => {
 		// Updates tokenId key in localStorage after successful login
-		localStorage.setItem('tokenId', token);
+		localStorage.setItem('tokenId', data.result);
+		localStorage.setItem('userName', data.user.name);
 		return () => {
-			setToken(token);
+			setToken(data.result);
 		};
-	}, [token]);
+	}, [data]);
 
 	const handleLoginDetails = (event) => {
 		// Updates loginFormDetails on any change in input fields
@@ -51,7 +53,7 @@ function Login() {
 				password: loginFormDetails.password,
 			})
 			.then((response) => {
-				setToken(response.data.result);
+				setData(response.data);
 				navigateToCourses();
 			})
 			.catch((error) => {

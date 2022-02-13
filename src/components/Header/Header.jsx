@@ -11,8 +11,10 @@ function Header() {
 
 	const navigateToLogin = useNavigateToPage('/login');
 
+	const userName = window.localStorage.getItem('userName');
+
 	const clickHandler = () => {
-		window.localStorage.removeItem('tokenId');
+		window.localStorage.clear();
 		navigateToLogin();
 	};
 
@@ -25,9 +27,7 @@ function Header() {
 						''
 					) : (
 						<div className='d-flex'>
-							<strong className='username'>
-								{constantVariables.USER_NAME}
-							</strong>
+							<strong className='username'>{userName}</strong>
 
 							<Button
 								buttonText={constantVariables.LOGOUT}

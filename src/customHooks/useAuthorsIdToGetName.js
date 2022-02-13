@@ -5,8 +5,7 @@ function useAuthorsIdToGetName(authorsId) {
 	authorsId.forEach((authorId) =>
 		mockedAuthorsList.forEach((authorsList) => {
 			if (authorsList.id === authorId) {
-				arrayOfAuthors.push(authorsList.name);
-				arrayOfAuthors.push(', ');
+				arrayOfAuthors.push(authorsList.name, ',');
 			}
 		})
 	);

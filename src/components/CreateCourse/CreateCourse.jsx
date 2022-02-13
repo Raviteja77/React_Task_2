@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '../../common/Button/Button';
 import Input from '../../common/Input/Input';
 import { mockedAuthorsList } from '../../constants';
@@ -10,7 +10,7 @@ import useNavigateToPage from '../../customHooks/useNavigateToPage';
 
 function CreateCourse() {
 	const [addAuthors, setAddAuthors] = useState([]);
-	const [createdAuthorsId, setCreatedAuthorsId] = useState([]);
+	const [UpdateAuthorsIdToForm, setUpdateAuthorsIdToForm] = useState([]);
 	const [authorsList, setAuthorsList] = useState(mockedAuthorsList);
 	const [createAuthor, setCreateAuthor] = useState('');
 	const [calculateDuration, setCalculateDuration] = useState('');
@@ -22,6 +22,13 @@ function CreateCourse() {
 		duration: '',
 		authors: [],
 	});
+
+	useEffect(() => {
+		setAuthorsList(authorsList);
+		return () => {
+			setAuthorsList(authorsList);
+		};
+	}, [authorsList]);
 
 	const navigateToCourses = useNavigateToPage('/courses');
 
@@ -63,15 +70,14 @@ function CreateCourse() {
 			},
 		]);
 		setAuthorsList(authorsList.filter((author) => author.id !== authorId));
-		addAuthorsToFormDetails(authorId);
-	};
-
-	const addAuthorsToFormDetails = (authorId) => {
-		// Stores authorsId in courseAuthorsId
 		authorsList.forEach((author) => {
 			if (author.id === authorId) {
-				setCreatedAuthorsId([...createdAuthorsId, authorId]);
+				setUpdateAuthorsIdToForm([...UpdateAuthorsIdToForm, authorId]);
 			}
+		});
+		setFormDetails({
+			...formDetails,
+			authors: [...UpdateAuthorsIdToForm, authorId],
 		});
 	};
 
@@ -86,6 +92,11 @@ function CreateCourse() {
 			},
 		]);
 		setAddAuthors(addAuthors.filter((author) => author.id !== authorId));
+		UpdateAuthorsIdToForm.splice(UpdateAuthorsIdToForm.indexOf(authorId), 1);
+		setFormDetails({
+			...formDetails,
+			authors: [...UpdateAuthorsIdToForm],
+		});
 	};
 
 	const durationHandler = (event) => {
@@ -96,7 +107,6 @@ function CreateCourse() {
 		setCalculateDuration(hours);
 		setFormDetails({
 			...formDetails,
-			authors: createdAuthorsId,
 			duration: hours,
 			id: 'id' + Math.random().toString(16).slice(2),
 			creationDate: today.split('-').reverse().join('/'),
